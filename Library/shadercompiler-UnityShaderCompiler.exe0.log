@@ -1,0 +1,5 @@
+Base path: 'C:/Users/asus/Desktop/unity projects/2019.2.16f1/Editor/Data', plugins path 'C:/Users/asus/Desktop/unity projects/2019.2.16f1/Editor/Data/PlaybackEngines'
+Cmd: initializeCompiler
+Unhandled exception: Protocol error - unexpected end of data (did the Editor crash?)
+
+Quitting shader compiler process
