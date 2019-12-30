@@ -16,8 +16,19 @@ public class playerControls : MonoBehaviour
     Vector2 startPos;
     Vector2 endPos;
     Vector2 direction;
-    bool stopJumping = false;
- 
+    public bool stopJumping = true;
+
+    //player components
+    bool XAxisRotation;
+
+    //pointer
+    public bool hasStoppedJumping = false;
+
+    private void Start()
+    {
+
+    }
+
     void Update()
     {
         jump();
@@ -25,10 +36,9 @@ public class playerControls : MonoBehaviour
 
     void jump()
     {
+        hasStoppedJumping = false;
 
-        isGrounded = Physics2D.OverlapArea(new Vector2(transform.position.x - 0.5f, transform.position.y - 0.5f), new Vector2(transform.position.x + 0.5f, transform.position.y - 0.53f),groundLayer);//in the second paramiter y-0.61f can be changed depending on how tall the player object is
-   
-       
+        isGrounded = Physics2D.OverlapArea(new Vector2(transform.position.x - 0.5f, transform.position.y - 0.5f), new Vector2(transform.position.x + 0.5f, transform.position.y - 0.53f), groundLayer);//in the second paramiter y-0.61f can be changed depending on how tall the player object is
 
         if (Input.touchCount > 0)
         {
@@ -39,31 +49,54 @@ public class playerControls : MonoBehaviour
                 case TouchPhase.Began:
                     startPos = patima.position;
                     break;
-             
+
                 case TouchPhase.Moved:
                     break;
-              
-                case TouchPhase.Ended:                   
+
+                case TouchPhase.Ended:
                     endPos = patima.position;
-                    direction.x = startPos.x - endPos.x;// HERE
+                    direction.x = startPos.x - endPos.x;
                     deadZone = endPos.x - startPos.x;
                     stopJumping = false;
+
                     break;
             }
 
+
         }
-        if (25 < Mathf.Abs(deadZone))
+
+        if (25 < Mathf.Abs(deadZone))//if the touch has been moved more than 25 pixels
         {
+
             if (Input.touchCount == 0 && direction.x < 0 && isGrounded && !stopJumping)
             {
-                gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(jumpHight, jumpDistance), ForceMode2D.Impulse);
+                hasStoppedJumping = true;//for bubbles script
+
+                gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(jumpHight, jumpDistance), ForceMode2D.Impulse);//jumps left
+
                 stopJumping = true;
+
+                gameObject.GetComponentInChildren<SpriteRenderer>().flipX = false;
             }
             if (Input.touchCount == 0 && direction.x > 0 && isGrounded && !stopJumping)
             {
-                gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0 - jumpHight, jumpDistance), ForceMode2D.Impulse);
+                hasStoppedJumping = true;//for bubbles script
+
+                gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0 - jumpHight, jumpDistance), ForceMode2D.Impulse);//jumps right
+
                 stopJumping = true;
+
+                gameObject.GetComponentInChildren<SpriteRenderer>().flipX = true;
             }
+            if (Input.touchCount > 0 && !isGrounded)
+            {
+                gameObject.GetComponent<Rigidbody2D>().gravityScale = 10;
+            }
+            else
+            {
+                gameObject.GetComponent<Rigidbody2D>().gravityScale = 3;
+            }
+
         }
     }
 }
